@@ -1,0 +1,12 @@
+.messages-container {
+
+}
+
+.messages {
+    list-style-type: none;
+    margin: 25px 5px 20px 10px;
+}
+
+.message-element {
+    margin-bottom: 10px;
+}

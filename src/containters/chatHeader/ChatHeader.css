@@ -1,0 +1,9 @@
+.header {
+    background-color: #1890ff;
+    font-weight: bold;
+    font-size: 30px;
+    margin-bottom: 15px;
+    display: inline-block;
+    color: #ffffff;
+    text-shadow: 4px 4px 0 #727272, 6px 6px 0 #1890ff;
+}

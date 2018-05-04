@@ -1,0 +1,41 @@
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f9f2f2;
+    background-size: cover;
+    font-weight: 400;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.58;
+    height: 100%;
+}
+
+#video-background {
+    position: fixed;
+    right: -3px;
+    bottom: -3px;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    filter: blur(3px);
+}
+
+
+.App {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
