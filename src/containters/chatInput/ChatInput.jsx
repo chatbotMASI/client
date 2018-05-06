@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { Button, Col, Input, Row, message } from 'antd';
+import React, {Component} from 'react';
+import {Button, Col, Input, Row, message} from 'antd';
 import PropTypes from "prop-types";
 import axios from 'axios'
-import isEmpty from 'lodash/isEmpty';
+import {map, isEmpty} from 'lodash'
 
 export class ChatInput extends Component {
     constructor(props) {
@@ -23,13 +23,13 @@ export class ChatInput extends Component {
 
     render() {
         return (
-            <Row gutter={ 5 }>
-                <Col span={ 22 }>
-                    <Input placeholder="Type a message" size="large" onPressEnter={ this.sendMessage }
-                           value={ this.state.message } onChange={ this.updateMessage }/>
+            <Row gutter={5}>
+                <Col span={22}>
+                    <Input autoFocus placeholder="Type a message to bot here" size="large" onPressEnter={this.sendMessage}
+                           value={this.state.message} onChange={this.updateMessage}/>
                 </Col>
-                <Col span={ 2 }>
-                    <Button type="primary" size="large" icon="right" onClick={ this.sendMessage }>Send</Button>
+                <Col span={2}>
+                    <Button type="primary" size="large" icon="right" onClick={this.sendMessage}>Send</Button>
                 </Col>
             </Row>
         );
@@ -39,10 +39,22 @@ export class ChatInput extends Component {
         if (isEmpty(this.state.message)) {
             message.error("Message can't be empty!")
         } else {
-            this.state.http.post('/messages', { message: this.state.message }).then(value => {
+            this.props.addMessage(this.state.message, 'User');
+            this.setState({message: ""});
+            let data;
+            if (isEmpty(this.props.context)) {
+                data = {message: this.state.message};
+            } else {
+                data = {message: this.state.message, context: this.props.context};
+            }
+            this.state.http.post('/chat', data).then(value => {
                 console.log('response', value);
-                this.props.onSubmit(this.state.message);
-                this.setState({message: ""});
+                this.props.setContext(value.data.context);
+                map(value.data.response, message => {
+                    if (!isEmpty(message)) {
+                        this.props.addMessage(message, 'Bot');
+                    }
+                });
             });
         }
     }
@@ -50,7 +62,9 @@ export class ChatInput extends Component {
 
 
 ChatInput.propTypes = {
-    onSubmit: PropTypes.func,
+    addMessage: PropTypes.func,
+    setContext: PropTypes.func,
+    context: PropTypes.object
 };
 
 ChatInput.defaultProps = {};
