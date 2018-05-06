@@ -25,7 +25,8 @@ export class ChatInput extends Component {
         return (
             <Row gutter={5}>
                 <Col span={22}>
-                    <Input autoFocus placeholder="Type a message to bot here" size="large" onPressEnter={this.sendMessage}
+                    <Input autoFocus placeholder="Type a message to bot here" size="large"
+                           onPressEnter={this.sendMessage}
                            value={this.state.message} onChange={this.updateMessage}/>
                 </Col>
                 <Col span={2}>
@@ -50,11 +51,9 @@ export class ChatInput extends Component {
             this.state.http.post('/chat', data).then(value => {
                 console.log('response', value);
                 this.props.setContext(value.data.context);
-                map(value.data.response, message => {
-                    if (!isEmpty(message)) {
-                        this.props.addMessage(message, 'Bot');
-                    }
-                });
+                if (!isEmpty(value.data.response)) {
+                    this.props.addMessage(value.data.response, 'Bot');
+                }
             });
         }
     }

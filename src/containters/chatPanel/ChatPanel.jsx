@@ -33,7 +33,6 @@ export class ChatPanel extends Component {
     };
 
     render() {
-        console.log('messages', this.state.messages);
         return (
             <div className="chat-panel">
                 <Row type="flex" justify="space-around" align="middle">
