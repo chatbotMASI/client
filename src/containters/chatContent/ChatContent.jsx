@@ -50,6 +50,14 @@ export class ChatContent extends Component {
                         <Step title="Choose your musical instrument" icon={<Icon type="heart-o"/>}/>
                         <Step title="Get product" icon={<Icon type="shop"/>}/>
                     </Steps>
+                    <div className="tooltip">
+                        For start chat with bot write a <Icon type="message" /> or press <Icon type="enter" />
+                    </div>
+                    <div style={{float: "left", clear: "both"}}
+                         ref={(el) => {
+                             this.messagesEnd = el;
+                         }}>
+                    </div>
                 </div>
             );
         }

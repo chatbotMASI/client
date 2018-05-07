@@ -37,25 +37,34 @@ export class ChatInput extends Component {
     }
 
     sendMessage = () => {
+        if (isEmpty(this.state.message) && isEmpty(this.props.context)) {
+            this.sendRequest();
+            return;
+        }
+
         if (isEmpty(this.state.message)) {
-            message.error("Message can't be empty!")
+            message.error("Message can't be empty!");
         } else {
             this.props.addMessage(this.state.message, 'User');
             this.setState({message: ""});
-            let data;
-            if (isEmpty(this.props.context)) {
-                data = {message: this.state.message};
-            } else {
-                data = {message: this.state.message, context: this.props.context};
-            }
-            this.state.http.post('/chat', data).then(value => {
-                console.log('response', value);
-                this.props.setContext(value.data.context);
-                if (!isEmpty(value.data.response)) {
-                    this.props.addMessage(value.data.response, 'Bot');
-                }
-            });
+            this.sendRequest();
         }
+    };
+
+    sendRequest = () => {
+        let data;
+        if (isEmpty(this.props.context)) {
+            data = {message: this.state.message};
+        } else {
+            data = {message: this.state.message, context: this.props.context};
+        }
+        this.state.http.post('/chat', data).then(value => {
+            console.log('response', value);
+            this.props.setContext(value.data.context);
+            if (!isEmpty(value.data.response)) {
+                this.props.addMessage(value.data.response, 'Bot');
+            }
+        });
     }
 }
 
