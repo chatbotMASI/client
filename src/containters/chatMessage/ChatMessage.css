@@ -4,4 +4,24 @@
 
 .right-align {
     float: right;
+    word-break: break-all;
+}
+
+.message {
+    padding: 2px 10px 2px 10px;
+    border-radius: 4px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #1890ff;
+    border-color: #1890ff;
+    line-height: 30px;
+    margin-top: 5px;
+}
+
+.bot-message {
+    display: inline-flex;
+}
+
+.ant-form-item {
+    margin-bottom: 0;
 }

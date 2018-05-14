@@ -3,14 +3,14 @@
 }
 
 .steps-container {
-    margin-top: 40%;
+    margin-top: 100px;
     margin-left: 50px;
     margin-right: 60px;
 }
 
 .messages {
     list-style-type: none;
-    margin: 25px 5px 20px 10px;
+    margin: 25px 10px 25px -25px;
 }
 
 .message-element {

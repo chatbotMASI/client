@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import ChatMessage from "../chatMessage/ChatMessage";
 import './ChatContent.css';
-import {Card, Col, Steps, Icon} from 'antd';
-import {map, isEmpty} from 'lodash';
+import { Col, Icon, Steps } from 'antd';
+import { isEmpty, map } from 'lodash';
 import PropTypes from "prop-types";
 
 const Step = Steps.Step;
@@ -19,11 +19,9 @@ export class ChatContent extends Component {
     render() {
         const messages = map(this.props.allMessages, value => {
             return (
-                <li key={value.time}>
-                    <Col span={23} className="message-element">
-                        <Card title={value.sender}>
-                            <ChatMessage message={value.message}/>
-                        </Card>
+                <li key={ value.time }>
+                    <Col span={ 24 } className="message-element">
+                        <ChatMessage message={ value.message } type={ value.type } sender={ value.sender }/>
                     </Col>
                 </li>
             );
@@ -33,30 +31,30 @@ export class ChatContent extends Component {
             return (
                 <div className="messages-container">
                     <ul className="messages">
-                        {messages}
+                        { messages }
                     </ul>
-                    <div style={{float: "left", clear: "both"}}
-                         ref={(el) => {
+                    <div style={ {float: "left", clear: "both"} }
+                         ref={ (el) => {
                              this.messagesEnd = el;
-                         }}>
+                         } }>
                     </div>
                 </div>
             );
         } else {
             return (
                 <div className="steps-container">
-                    <Steps current={3}>
-                        <Step title="Chat with bot" icon={<Icon type="message"/>}/>
-                        <Step title="Choose your musical instrument" icon={<Icon type="heart-o"/>}/>
-                        <Step title="Get product" icon={<Icon type="shop"/>}/>
+                    <Steps current={ 3 }>
+                        <Step title="Chat with bot" icon={ <Icon type="message"/> }/>
+                        <Step title="Choose your musical instrument" icon={ <Icon type="heart-o"/> }/>
+                        <Step title="Get product" icon={ <Icon type="shop"/> }/>
                     </Steps>
                     <div className="tooltip">
-                        For start chat with bot write a <Icon type="message" /> or press <Icon type="enter" />
+                        For start chat with bot write a <Icon type="message"/> or press <Icon type="enter"/>
                     </div>
-                    <div style={{float: "left", clear: "both"}}
-                         ref={(el) => {
+                    <div style={ {float: "left", clear: "both"} }
+                         ref={ (el) => {
                              this.messagesEnd = el;
-                         }}>
+                         } }>
                     </div>
                 </div>
             );
