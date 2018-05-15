@@ -2,17 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './ChatMessage.css';
-import { Avatar, Col, Form } from 'antd';
-import { isEqual } from 'lodash';
+import { Avatar, Button, Col, Form } from 'antd';
+import { isEqual, isObject, map } from 'lodash';
 
 const FormItem = Form.Item;
 
 export class ChatMessage extends Component {
     render() {
-        if (isEqual(this.props.type, 'msg')) {
-            if (isEqual(this.props.sender, 'Bot')) {
+        if (isEqual(this.props.sender, 'Bot')) {
+            if (isEqual(this.props.type, 'msg')) {
                 return (
-                    <Form>
+                    <Form className="bot-form">
                         <span className="bot-message">
                             <FormItem>
                                 <Avatar style={ {backgroundColor: '#1890ff'} } icon="aliwangwang"/>
@@ -27,17 +27,37 @@ export class ChatMessage extends Component {
             } else {
                 return (
                     <Form>
-                        <Col span={ 24 }>
-                            <FormItem>
-                                <span className={ classNames('message', 'right-align') }>{ this.props.message }</span>
-                            </FormItem>
-                        </Col>
+                        <span className="bot-message">
+                            <div style={ {marginLeft: '37px'} }/>
+                            <div className="buttons">
+                                { map(this.props.message, message => {
+                                    return (
+                                        <FormItem key={ message }>
+                                            <Button
+                                                key={ message }
+                                                className={ classNames('left-align', 'bot-button') }
+                                                onClick={ () => this.props.sendButtonRequest(message) }
+                                                disabled={ this.props.disable }
+                                            >
+                                                { message }
+                                            </Button>
+                                        </FormItem>
+                                    );
+                                }) }
+                            </div>
+                        </span>
                     </Form>
                 );
             }
         } else {
             return (
-                <span>Some btn</span>
+                <Form>
+                    <Col span={ 24 }>
+                        <FormItem>
+                            <span className={ classNames('message', 'right-align') }>{ this.props.message }</span>
+                        </FormItem>
+                    </Col>
+                </Form>
             );
         }
     }
@@ -46,7 +66,12 @@ export class ChatMessage extends Component {
 ChatMessage.propTypes = {
     sender: PropTypes.string,
     type: PropTypes.string,
-    message: PropTypes.string.isRequired,
+    disable: PropTypes.bool,
+    sendButtonRequest: PropTypes.func,
+    message: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.array
+    ]),
 };
 
 ChatMessage.defaultProps = {

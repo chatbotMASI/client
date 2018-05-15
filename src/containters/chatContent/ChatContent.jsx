@@ -21,7 +21,13 @@ export class ChatContent extends Component {
             return (
                 <li key={ value.time }>
                     <Col span={ 24 } className="message-element">
-                        <ChatMessage message={ value.message } type={ value.type } sender={ value.sender }/>
+                        <ChatMessage
+                            message={ value.message }
+                            type={ value.type }
+                            sender={ value.sender }
+                            disable={ value.disable }
+                            sendButtonRequest={ this.props.sendButtonRequest }
+                        />
                     </Col>
                 </li>
             );
@@ -65,6 +71,7 @@ export class ChatContent extends Component {
 
 ChatContent.propTypes = {
     allMessages: PropTypes.array,
+    sendButtonRequest: PropTypes.func
 };
 
 ChatContent.defaultProps = {
