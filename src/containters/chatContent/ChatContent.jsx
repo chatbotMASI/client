@@ -13,7 +13,7 @@ export class ChatContent extends Component {
     }
 
     scrollToBottom = () => {
-        this.messagesEnd.scrollIntoView({behavior: "smooth"});
+        this.messagesEnd.scrollIntoView({ behavior: "smooth" });
     };
 
     render() {
@@ -26,6 +26,8 @@ export class ChatContent extends Component {
                             type={ value.type }
                             sender={ value.sender }
                             disable={ value.disable }
+                            time={ value.time }
+                            openInNewWindow={ this.props.openInNewWindow }
                             sendButtonRequest={ this.props.sendButtonRequest }
                         />
                     </Col>
@@ -39,7 +41,7 @@ export class ChatContent extends Component {
                     <ul className="messages">
                         { messages }
                     </ul>
-                    <div style={ {float: "left", clear: "both"} }
+                    <div style={ { float: "left", clear: "both" } }
                          ref={ (el) => {
                              this.messagesEnd = el;
                          } }>
@@ -57,7 +59,7 @@ export class ChatContent extends Component {
                     <div className="tooltip">
                         For start chat with bot write a <Icon type="message"/> or press <Icon type="enter"/>
                     </div>
-                    <div style={ {float: "left", clear: "both"} }
+                    <div style={ { float: "left", clear: "both" } }
                          ref={ (el) => {
                              this.messagesEnd = el;
                          } }>
@@ -71,7 +73,8 @@ export class ChatContent extends Component {
 
 ChatContent.propTypes = {
     allMessages: PropTypes.array,
-    sendButtonRequest: PropTypes.func
+    sendButtonRequest: PropTypes.func,
+    openInNewWindow: PropTypes.func
 };
 
 ChatContent.defaultProps = {
