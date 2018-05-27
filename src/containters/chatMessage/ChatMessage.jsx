@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './ChatMessage.css';
-import { Avatar, Button, Col, Form } from 'antd';
+import { Avatar, Button, Col, Form, Rate } from 'antd';
 import { isEqual, map } from 'lodash';
 
 const FormItem = Form.Item;
@@ -10,6 +10,14 @@ const FormItem = Form.Item;
 export class ChatMessage extends Component {
     openWindow = () => {
         this.props.openInNewWindow(this.props.message, window);
+    };
+
+    efficiencyRatingRequest = (value) => {
+        this.props.sendEfficiencyRatingRequest(value, this.props.conversationId);
+    };
+
+    sendUsabilityRatingRequest = (value) => {
+        this.props.sendUsabilityRatingRequest(value, this.props.conversationId);
     };
 
     render() {
@@ -22,8 +30,11 @@ export class ChatMessage extends Component {
                                 <Avatar style={ { backgroundColor: '#1890ff' } } icon="aliwangwang"/>
                             </FormItem>
                             <FormItem>
-                                <span style={ { color: '#efefef', marginLeft: '5px' } }
-                                      className={ classNames('message', 'left-align') }>{ this.props.message }</span>
+                                <span
+                                    className={ classNames('message', 'left-align', 'bot-text-message') }
+                                >
+                                    { this.props.message }
+                                </span>
                             </FormItem>
                         </span>
                     </Form>
@@ -45,6 +56,44 @@ export class ChatMessage extends Component {
                                     >
                                         Open link in new window
                                     </Button>
+                                </FormItem>
+                            </div>
+                        </span>
+                    </Form>
+                );
+            } else if (isEqual(this.props.type, 'rating')) {
+                return (
+                    <Form>
+                        <span className="bot-message">
+                            <div style={ { marginLeft: '37px' } }/>
+                            <div className="buttons">
+                                <FormItem>
+                                    <span style={ { color: '#efefef', marginTop: '-4px', marginBottom: '10px' } }
+                                          className={ classNames('message', 'left-align') }>
+                                        Rate your satisfaction with listed products
+                                    </span>
+                                </FormItem>
+                                <FormItem>
+                                    <Rate
+                                        className={ classNames('left-align', 'bot-button', 'rating') }
+                                        onChange={ this.efficiencyRatingRequest }
+                                        allowHalf
+                                        allowClear={ false }
+                                    />
+                                </FormItem>
+                                <FormItem>
+                                    <span style={ { color: '#efefef', marginTop: '-4px', marginBottom: '10px' } }
+                                          className={ classNames('message', 'left-align') }>
+                                        Also rate how useful I was
+                                    </span>
+                                </FormItem>
+                                <FormItem>
+                                    <Rate
+                                        className={ classNames('left-align', 'bot-button', 'rating') }
+                                        onChange={ this.sendUsabilityRatingRequest }
+                                        allowHalf
+                                        allowClear={ false }
+                                    />
                                 </FormItem>
                             </div>
                         </span>
@@ -95,6 +144,9 @@ ChatMessage.propTypes = {
     disable: PropTypes.bool,
     time: PropTypes.number,
     sendButtonRequest: PropTypes.func,
+    conversationId: PropTypes.string,
+    sendUsabilityRatingRequest: PropTypes.func,
+    sendEfficiencyRatingRequest: PropTypes.func,
     openInNewWindow: PropTypes.func,
     message: PropTypes.oneOfType([
         PropTypes.string,

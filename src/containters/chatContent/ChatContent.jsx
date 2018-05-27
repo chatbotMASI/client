@@ -27,6 +27,9 @@ export class ChatContent extends Component {
                             sender={ value.sender }
                             disable={ value.disable }
                             time={ value.time }
+                            conversationId={ value.conversationId }
+                            sendUsabilityRatingRequest={ this.props.sendUsabilityRatingRequest }
+                            sendEfficiencyRatingRequest={ this.props.sendEfficiencyRatingRequest }
                             openInNewWindow={ this.props.openInNewWindow }
                             sendButtonRequest={ this.props.sendButtonRequest }
                         />
@@ -74,6 +77,8 @@ export class ChatContent extends Component {
 ChatContent.propTypes = {
     allMessages: PropTypes.array,
     sendButtonRequest: PropTypes.func,
+    sendUsabilityRatingRequest: PropTypes.func,
+    sendEfficiencyRatingRequest: PropTypes.func,
     openInNewWindow: PropTypes.func
 };
 

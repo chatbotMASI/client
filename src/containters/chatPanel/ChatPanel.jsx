@@ -3,7 +3,7 @@ import "./ChatPanel.css";
 import { ChatHeader } from "../chatHeader/ChatHeader";
 import { ChatContent } from "../chatContent/ChatContent";
 import { ChatInput } from "../chatInput/ChatInput";
-import { Layout, message } from 'antd';
+import { Layout, message, Icon } from 'antd';
 import axios from "axios/index";
 import { isEmpty, isNil, map } from "lodash";
 
@@ -21,8 +21,11 @@ export class ChatPanel extends Component {
                 headers: { 'Content-Type': 'application/json' }
             }),
             isProcessing: false,
-            message: ''
+            message: '',
+            ipAddress: '',
+            conversationId: ''
         };
+        this.getIpAddress();
     }
 
     setProcessing = (status) => {
@@ -44,14 +47,16 @@ export class ChatPanel extends Component {
                 type,
                 time: new Date().getTime(),
                 message,
-                disable: false
+                disable: false,
+                conversationId: this.state.conversationId
             }]
         });
     };
 
     setContext = (context) => {
         this.setState({
-            context: context
+            context: context,
+            conversationId: isNil(context) ? undefined : context.conversation_id
         })
     };
 
@@ -83,7 +88,7 @@ export class ChatPanel extends Component {
         let data;
         this.setProcessing(true);
         if (isEmpty(this.state.context)) {
-            data = { message };
+            data = { message, ipAddress: this.state.ipAddress };
         } else {
             data = { message, context: this.state.context };
         }
@@ -97,13 +102,23 @@ export class ChatPanel extends Component {
                 this.addMessage(value.data.buttons, 'Bot', 'btn');
             }
             if (!isEmpty(value.data.link)) {
-                this.addMessage(value.data.link, 'Bot', 'link');
+                this.openLink(value.data.link);
             }
             if (!isNil(optionalMessage)) {
                 this.disableButtons();
             }
             this.setProcessing(false);
-        });
+        }).catch(() => message.error(
+            <span>
+                Something bad happened <Icon type="frown-o"/>Please try again later
+            </span>
+        ));
+    };
+
+    openLink = (link) => {
+        this.addMessage(link, 'Bot', 'link');
+        this.openInNewWindow(link, window);
+        this.setContext(null);
     };
 
     openInNewWindow = (link, window) => {
@@ -111,20 +126,62 @@ export class ChatPanel extends Component {
         const height = window.screen.height - 110;
         const strWindowFeatures = `menubar=no,location=yes,resizable=yes,scrollbars=yes,status=yes,width=${width},height=${height}`;
         const tab = window.open(link, "_blank", strWindowFeatures);
-        
         tab.focus();
-        const timer = setInterval(() => {
-            if(tab.closed) {
-                clearInterval(timer);
-                this.addMessage('I see that you close Amazon.com', 'Bot', 'msg');
-                this.addMessage('Do you like it?', 'Bot', 'msg');
-            }
-        }, 1000);
+
+        this.addMessage('How about rating me?', 'Bot', 'msg');
+        this.addMessage('', 'Bot', 'rating');
+
+        // const timer = setInterval(() => {
+        //     if(tab.closed) {
+        //         clearInterval(timer);
+        //         this.addMessage('I see that you close Amazon.com', 'Bot', 'msg');
+        //         this.addMessage('Do you like it?', 'Bot', 'msg');
+        //     }
+        // }, 1000);
     };
 
     sendButtonRequest = (message) => {
         this.addMessage(message, 'User', 'msg');
         this.sendRequest(message);
+    };
+
+    sendUsabilityRatingRequest = (rated, conversationId) => {
+        const rate = rated * 2;
+        this.state.http.post(`/usability-rate?conversationId=${conversationId}`, rate).then(() => {
+            message.success(
+                <span>
+                    Usability rated. Thanks! <Icon type="smile-o"/>
+                </span>
+            );
+        }).catch(() => message.error(
+            <span>
+                Something bad happened <Icon type="frown-o"/>Please try again later
+            </span>
+        ));
+    };
+
+
+    sendEfficiencyRatingRequest = (rated, conversationId) => {
+        const rate = rated * 2;
+        this.state.http.post(`/effectiveness-rate?conversationId=${conversationId}`, rate).then(() => {
+            message.success(
+                <span>
+                    Satisfaction rated. Thanks! <Icon type="smile-o"/>
+                </span>
+            );
+        }).catch(() => message.error(
+            <span>
+                Something bad happened <Icon type="frown-o"/>Please try again later
+            </span>
+        ));
+    };
+
+    getIpAddress = () => {
+        axios.post('http://ipinfo.io').then(res => {
+            this.setState({
+                ipAddress: res.data.ip
+            });
+        });
     };
 
     disableButtons = () => {
@@ -146,6 +203,8 @@ export class ChatPanel extends Component {
                         <ChatContent
                             allMessages={ this.state.messages }
                             sendButtonRequest={ this.sendButtonRequest }
+                            sendUsabilityRatingRequest={ this.sendUsabilityRatingRequest }
+                            sendEfficiencyRatingRequest={ this.sendEfficiencyRatingRequest }
                             openInNewWindow={ this.openInNewWindow }
                         />
                     </Content>
