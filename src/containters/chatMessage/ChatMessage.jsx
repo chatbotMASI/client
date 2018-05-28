@@ -111,7 +111,7 @@ export class ChatMessage extends Component {
                                             <Button
                                                 key={ btnMessage }
                                                 className={ classNames('left-align', 'bot-button') }
-                                                onClick={ () => this.props.sendButtonRequest(btnMessage) }
+                                                onClick={ () => this.props.sendButtonRequest(btnMessage, this.props.context) }
                                                 disabled={ this.props.disable }
                                             >
                                                 { btnMessage }
@@ -148,6 +148,7 @@ ChatMessage.propTypes = {
     sendUsabilityRatingRequest: PropTypes.func,
     sendEfficiencyRatingRequest: PropTypes.func,
     openInNewWindow: PropTypes.func,
+    context: PropTypes.any,
     message: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.array

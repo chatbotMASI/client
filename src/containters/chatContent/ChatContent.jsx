@@ -31,6 +31,7 @@ export class ChatContent extends Component {
                             sendUsabilityRatingRequest={ this.props.sendUsabilityRatingRequest }
                             sendEfficiencyRatingRequest={ this.props.sendEfficiencyRatingRequest }
                             openInNewWindow={ this.props.openInNewWindow }
+                            context={ value.context }
                             sendButtonRequest={ this.props.sendButtonRequest }
                         />
                     </Col>

@@ -5,7 +5,8 @@ import { ChatContent } from "../chatContent/ChatContent";
 import { ChatInput } from "../chatInput/ChatInput";
 import { Layout, message, Icon } from 'antd';
 import axios from "axios/index";
-import { isEmpty, isNil, map } from "lodash";
+import { isEmpty, isNil, map, last } from "lodash";
+import { Dot } from 'react-animated-dots';
 
 const { Header, Footer, Content } = Layout;
 
@@ -48,7 +49,8 @@ export class ChatPanel extends Component {
                 time: new Date().getTime(),
                 message,
                 disable: false,
-                conversationId: this.state.conversationId
+                conversationId: this.state.conversationId,
+                context: this.state.context
             }]
         });
     };
@@ -83,14 +85,18 @@ export class ChatPanel extends Component {
         return isEmpty(this.state.message)
     };
 
-    sendRequest = (optionalMessage) => {
+    sendRequest = (optionalMessage, optionalContext) => {
         const message = isNil(optionalMessage) ? this.state.message : optionalMessage;
         let data;
         this.setProcessing(true);
-        if (isEmpty(this.state.context)) {
-            data = { message, ipAddress: this.state.ipAddress };
+        if (isEmpty(optionalContext)) {
+            if (isEmpty(this.state.context)) {
+                data = { message, ipAddress: this.state.ipAddress };
+            } else {
+                data = { message, context: this.state.context };
+            }
         } else {
-            data = { message, context: this.state.context };
+            data = { message, context: optionalContext };
         }
         this.state.http.post('/chat', data).then(value => {
             console.log('response', value);
@@ -104,7 +110,7 @@ export class ChatPanel extends Component {
             if (!isEmpty(value.data.link)) {
                 this.openLink(value.data.link);
             }
-            if (!isNil(optionalMessage)) {
+            if (!isNil(optionalMessage) && last(this.state.messages).type !== 'btn') {
                 this.disableButtons();
             }
             this.setProcessing(false);
@@ -118,6 +124,7 @@ export class ChatPanel extends Component {
     openLink = (link) => {
         this.addMessage(link, 'Bot', 'link');
         this.openInNewWindow(link, window);
+        this.addMessage('Now we are starting over. What else can I do for you?', 'Bot', 'msg');
         this.setContext(null);
     };
 
@@ -140,9 +147,10 @@ export class ChatPanel extends Component {
         // }, 1000);
     };
 
-    sendButtonRequest = (message) => {
+    sendButtonRequest = (message, context) => {
         this.addMessage(message, 'User', 'msg');
         this.sendRequest(message);
+        // this.sendRequest(message, context);
     };
 
     sendUsabilityRatingRequest = (rated, conversationId) => {
@@ -208,6 +216,11 @@ export class ChatPanel extends Component {
                             openInNewWindow={ this.openInNewWindow }
                         />
                     </Content>
+                    { this.state.isProcessing &&
+                    <span className="bot-typing">
+                        Bot is typing<Dot>.</Dot><Dot>.</Dot><Dot>.</Dot>
+                    </span>
+                    }
                     <Footer className="footer">
                         <ChatInput
                             sendMessage={ this.sendMessage }
