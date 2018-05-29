@@ -110,9 +110,9 @@ export class ChatPanel extends Component {
             if (!isEmpty(value.data.link)) {
                 this.openLink(value.data.link);
             }
-            if (!isNil(optionalMessage) && last(this.state.messages).type !== 'btn') {
-                this.disableButtons();
-            }
+            // if (!isNil(optionalMessage) && last(this.state.messages).type !== 'btn') {
+            //     this.disableButtons();
+            // }
             this.setProcessing(false);
         }).catch(() => message.error(
             <span>
@@ -149,8 +149,8 @@ export class ChatPanel extends Component {
 
     sendButtonRequest = (message, context) => {
         this.addMessage(message, 'User', 'msg');
-        this.sendRequest(message);
-        // this.sendRequest(message, context);
+        // this.sendRequest(message);
+        this.sendRequest(message, context);
     };
 
     sendUsabilityRatingRequest = (rated, conversationId) => {
